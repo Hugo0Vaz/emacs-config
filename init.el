@@ -5,12 +5,10 @@
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
 
-(menu-bar-mode -1)            ; Disable the menu bar
+(menu-bar-mode -1)          ; Disable the menu bar
 
 ;; Set up the visible bell
 (setq visible-bell t)
-
-(load-theme 'wombat)
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -50,10 +48,6 @@
          :map ivy-reverse-i-search-map
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
-
-(use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
 
@@ -66,7 +60,6 @@
   :config
   (setq which-key-idle-delay 1))
 
-
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -76,3 +69,6 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
+
+(use-package undo-tree
+  :ensure t)
