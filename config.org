@@ -1,3 +1,26 @@
+* Emacs Config
+
+** Roadmap
+Os objetivos desse arquivo de configuração são:
+- Criar um arquivo de configuração com somente o que eu necessito, sem contar com um ambiente /bloated/ como o do doom emacs.
+- Um ambiente que integra, PKM vindo do obsidian, IDE's para desenvolvimento como minha atual configuração do Neovim.
+- Keybindings mneônicos inspirados nos que são implementados no doom emacs e spacemacs.
+- Algumas soluções de produtividade como OrgTodo e OrgAgenda
+
+*** PKM
+Uma das principais razões para a troca de workflow para o Emacs é a possibilidade de usar a incrível ferramenta OrgMode. O OrgMode me apresenta aportunidades como:
+- Executar códigos que são colocados como bloco de código no documento.
+- Criar documentos em que posso usar /literate programming/ como esse aquivo de configuração.
+
+Além do OrgMode temos ferramentas como, OrgRoam e OrgCapture que trazem benefícios como:
+- Criação de notas orientadas por conceito ou método Zettlekasten, meu atual método de anotação utilizado no Obsidian.
+- Captura de notas, todos, fontes, ideias e etc. com o mínimo de atrito possível com o OrgCapture
+*** IDE's
+*** Produtividade
+*** Keybindings
+
+** UI
+
 #+begin_src emacs-lisp
 (setq inhibit-startup-message t)
 
@@ -10,10 +33,17 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
+#+end_src
 
-;; Make ESC quit prompts
+** General Keybindings
+
+#+begin_src emacs-lisp
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
 
+** Package Manager
+
+#+begin_src emacs-lisp
 ;; Initialize package sources
 (require 'package)
 
@@ -22,8 +52,8 @@
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
-(unless package-archive-contents
- (package-refresh-contents))
+(unless package-archive-contents (package-refresh-contents))
+
 
 ;; Initialize use-package on non-Linux platforms
 (unless (package-installed-p 'use-package)
@@ -31,8 +61,11 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+#+end_src
 
-(use-package command-log-mode)
+** IVY
+
+#+begin_src emacs-lisp
 
 (use-package ivy
   :diminish
@@ -49,17 +82,46 @@
          :map ivy-reverse-i-search-map
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
+
+#+end_src
+
+** Doom Modeline
+
+#+begin_src emacs-lisp
+
+(use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
 
+#+end_src
+
+** Temas
+
+#+begin_src emacs-lisp
+
 (use-package doom-themes
   :init (load-theme 'doom-gruvbox))
+
+
+#+end_src
+
+** Which-Key
+
+#+begin_src emacs-lisp
 
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
   :config
   (setq which-key-idle-delay 1))
+
+#+end_src
+
+** Helpful
+
+#+begin_src emacs-lisp
 
 (use-package helpful
   :custom
@@ -71,6 +133,13 @@
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
+#+end_src
+
+** Undo-Tree
+
+#+begin_src emacs-lisp
+
 (use-package undo-tree
   :ensure t)
+
 #+end_src
