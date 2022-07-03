@@ -1,22 +1,3 @@
-* Emacs Config
-
-Os objetivos desse arquivo de configuração são:
-- Criar um arquivo de configuração com somente o que eu necessito, sem contar com um ambiente /bloated/ como o do doom emacs.
-- Um ambiente que integra, PKM vindo do obsidian, IDE's para desenvolvimento como minha atual configuração do Neovim.
-- Keybindings mneônicos inspirados nos que são implementados no doom emacs e spacemacs.
-- Algumas soluções de produtividade como OrgTodo e OrgAgenda
-- Criar documentos em que posso usar /literate programming/ como esse aquivo de configuração.
-- Criação de notas orientadas por conceito ou método Zettlekasten, meu atual método de anotação utilizado no Obsidian.
-- Captura de notas, todos, fontes, ideias e etc. com o mínimo de atrito possível com o OrgCapture
-- Linting
-- Debugging
-- Project switching
-- Auto Completion
-
-** UI
-
-#+begin_src emacs-lisp
-
 (setq inhibit-startup-message t)
 (scroll-bar-mode -1)                   ; Disable visible scrollbar
 (tool-bar-mode -1)                     ; Disable the toolbar
@@ -26,11 +7,6 @@ Os objetivos desse arquivo de configuração são:
 (setq visible-bell t)                  ; Set up the visible bell
 (setq display-line-numbers 'relative)
 
-#+end_src
-
-** Package Manager
-
-#+begin_src emacs-lisp
 ;; Initialize package sources
 (require 'package)
 
@@ -48,11 +24,6 @@ Os objetivos desse arquivo de configuração são:
 
 (require 'use-package)
 (setq use-package-always-ensure t)
-#+end_src
-
-** IVY
-
-#+begin_src emacs-lisp
 
 (use-package ivy
   :diminish
@@ -72,60 +43,24 @@ Os objetivos desse arquivo de configuração são:
   :config
   (ivy-mode 1))
 
-#+end_src
-
-** IVY Rich
-
-#+begin_src emacs-lisp
-
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
 
-#+end_src
-
-** All The Icons
-
-#+begin_src emacs-lisp
-
 (use-package all-the-icons)
-
-#+end_src
-
-** Doom Modeline
-
-#+begin_src emacs-lisp
 
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
 
-#+end_src
-
-** Temas
-
-#+begin_src emacs-lisp
-
 (use-package doom-themes
   :init (load-theme 'doom-gruvbox t))
-
-#+end_src
-
-** Which-Key
-
-#+begin_src emacs-lisp
 
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
   :config
   (setq which-key-idle-delay 0.5))
-
-#+end_src
-
-** Helpful
-
-#+begin_src emacs-lisp
 
 (use-package helpful
   :custom
@@ -137,28 +72,11 @@ Os objetivos desse arquivo de configuração são:
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 
-#+end_src
-
-** Undo-Tree
-
-#+begin_src emacs-lisp
-
 (use-package undo-tree
   :ensure t)
 
-#+end_src
-
-** Rainbow Delimeters
-
-#+begin_src emacs-lisp
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-
-#+end_src
-
-** Counsel
-#+begin_src emacs-lisp
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -167,12 +85,6 @@ Os objetivos desse arquivo de configuração são:
          :map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history)))
 
-#+end_src
-
-** Helpful
-
-#+begin_src emacs-lisp
-
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -182,12 +94,6 @@ Os objetivos desse arquivo de configuração são:
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
-
-#+end_src
-
-** Evil Mode
-
-#+begin_src emacs-lisp
 
 (use-package evil
   :init
@@ -211,33 +117,4 @@ Os objetivos desse arquivo de configuração são:
   :config
   (evil-collection-init))
 
-#+end_src
-
-** General Keybindings
-
-As /keybindings/ são prefixadas globalmente com SPC assim como Spacemacs. Além disso após o prefixo espaço os prefixos mneônicos de classes de funcionalidades começam.
-
-As classes de prefixos são:
-- "b" -> buffer
-- "c" -> code
-- "f" -> file
-- "g" -> git
-- "i" -> insert
-- "n" -> notas
-- "o" -> open
-- "p" -> project
-- "q" -> quit/session
-- "r" -> remote
-- "s" -> search
-- "t" -> toggle
-
-| Keybind | Descrição |
-|         |           |
-
-#+begin_src emacs-lisp
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-#+end_src
-
-** Projectile
-** Magit
-** Dashboard
