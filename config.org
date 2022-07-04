@@ -13,7 +13,11 @@ Os objetivos desse arquivo de configuração são:
 - Project switching
 - Auto Completion
 
-** UI
+** TODO
+- [ ] Customizar 'evil-undo-system' para funcionalidade de REDO no C-r
+- [ ] Entender mais sobre o funcionamento do Magit e configurá-lo
+
+* UI
 
 #+begin_src emacs-lisp
 
@@ -24,11 +28,19 @@ Os objetivos desse arquivo de configuração são:
 (set-fringe-mode 10)                   ; Give some breathing room
 (menu-bar-mode -1)                     ; Disable the menu bar
 (setq visible-bell t)                  ; Set up the visible bell
-(setq display-line-numbers 'relative)
+(column-number-mode)
+(global-display-line-numbers-mode t)
 
+;; Disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
-** Package Manager
+* Package Manager
+A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usuários isolem as configurações de pacote de forma que auxilia em perfomance e organização do aquivo.
 
 #+begin_src emacs-lisp
 ;; Initialize package sources
@@ -50,7 +62,7 @@ Os objetivos desse arquivo de configuração são:
 (setq use-package-always-ensure t)
 #+end_src
 
-** IVY
+* IVY
 
 #+begin_src emacs-lisp
 
@@ -74,7 +86,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** IVY Rich
+* IVY Rich
 
 #+begin_src emacs-lisp
 
@@ -84,7 +96,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** All The Icons
+* All The Icons
 
 #+begin_src emacs-lisp
 
@@ -92,7 +104,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Doom Modeline
+* Doom Modeline
 
 #+begin_src emacs-lisp
 
@@ -102,7 +114,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Temas
+* Temas
 
 #+begin_src emacs-lisp
 
@@ -111,7 +123,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Which-Key
+* Which-Key
 
 #+begin_src emacs-lisp
 
@@ -123,7 +135,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Helpful
+* Helpful
 
 #+begin_src emacs-lisp
 
@@ -139,7 +151,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Undo-Tree
+* Undo-Tree
 
 #+begin_src emacs-lisp
 
@@ -148,7 +160,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Rainbow Delimeters
+* Rainbow Delimeters
 
 #+begin_src emacs-lisp
 
@@ -157,7 +169,8 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Counsel
+* Counsel
+
 #+begin_src emacs-lisp
 
 (use-package counsel
@@ -169,7 +182,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Helpful
+* Helpful
 
 #+begin_src emacs-lisp
 
@@ -185,7 +198,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** Evil Mode
+* Evil Mode
 
 #+begin_src emacs-lisp
 
@@ -213,7 +226,7 @@ Os objetivos desse arquivo de configuração são:
 
 #+end_src
 
-** General Keybindings
+* General Keybindings
 
 As /keybindings/ são prefixadas globalmente com SPC assim como Spacemacs. Além disso após o prefixo espaço os prefixos mneônicos de classes de funcionalidades começam.
 
@@ -238,6 +251,81 @@ As classes de prefixos são:
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
-** Projectile
-** Magit
-** Dashboard
+* Projectile
+
+#+begin_src emacs-lisp
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/Projetos")
+    (setq projectile-project-search-path '("~/Projetos")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+#+end_src
+
+* Counsel Projectile
+
+#+begin_src emacs-lisp
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+#+end_src
+
+* TODO Magit
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package magit
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+#+end_src
+
+* Dashboard
+* Org Mode
+
+#+begin_src emacs-lisp
+
+(defun hmvs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+(use-package org
+  :hook (org-mode . hmvs/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"))
+
+#+end_src
+
+* Org bullets
+
+#+begin_src emacs-lisp
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+#+end_src
+
+* Visual Fill column
+
+#+begin_src emacs-lisp
+
+(defun hmvs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . hmvs/org-mode-visual-fill))
+
+#+end_src
