@@ -63,6 +63,7 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 #+end_src
 
 * IVY
+Ferramenta de /autocomplete/ para minibuffers do Emacs.
 
 #+begin_src emacs-lisp
 
@@ -87,6 +88,7 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 #+end_src
 
 * IVY Rich
+Esse pacote oferece alguns comandos de IVY e Counsel melhorados através de /rich transformers/.
 
 #+begin_src emacs-lisp
 
@@ -97,6 +99,7 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 #+end_src
 
 * All The Icons
+Um pacote utilitário que fornece algumas fontes especiais para o Emacs.
 
 #+begin_src emacs-lisp
 
@@ -124,6 +127,7 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 #+end_src
 
 * Which-Key
+Pacote Emacs que exibe as combinações de teclas disponíveis no minibuffer.
 
 #+begin_src emacs-lisp
 
@@ -287,32 +291,19 @@ As classes de prefixos são:
 
 #+end_src
 
-* Dashboard
+* TODO Dashboard
 * Org Mode
 
 #+begin_src emacs-lisp
 
 (defun hmvs/org-mode-setup ()
   (org-indent-mode)
-  (variable-pitch-mode 1)
   (visual-line-mode 1))
 
 (use-package org
   :hook (org-mode . hmvs/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"))
-
-#+end_src
-
-* Org bullets
-
-#+begin_src emacs-lisp
-
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 #+end_src
 

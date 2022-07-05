@@ -143,19 +143,12 @@
 
 (defun hmvs/org-mode-setup ()
   (org-indent-mode)
-  (variable-pitch-mode 1)
   (visual-line-mode 1))
 
 (use-package org
   :hook (org-mode . hmvs/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"))
-
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (defun hmvs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
