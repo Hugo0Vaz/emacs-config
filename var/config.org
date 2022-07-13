@@ -17,6 +17,7 @@ Os objetivos desse arquivo de configuração são:
 - [ ] Customizar 'evil-undo-system' para funcionalidade de REDO no C-r
 - [ ] Entender mais sobre o funcionamento do Magit e configurá-lo
 
+
 * Startup performance
 
 #+begin_src emacs-lisp
@@ -98,25 +99,26 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 Configurações globais e do pacote General.el:
 
 #+begin_src emacs-lisp
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
 As /keybindings/ são prefixadas globalmente com SPC assim como Spacemacs. Além disso após o prefixo espaço os prefixos mneônicos de classes de funcionalidades começam.
 
-Para implementar de forma consistente /keybindings/ entre menus gerais e atalhos para funções específicas de pacotes, foi decidido que declaração de /keybindings/ de alto nível será feita na sessão de configuração do pacote general.el seguindo as tabelas e classes de prefixo abaixo. Para a configuração específica de pacotes, como ivy e yassinpet as /keybindings/ serão configuradas usando use-package
+Para implementar de forma consistente /keybindings/ entre menus gerais e atalhos para funções específicas de pacotes, foi decidido que declaração de /keybindings/ de alto nível será feita na sessão de configuração do pacote general.el seguindo as tabelas e classes de prefixo abaixo.
 
 As classes de prefixos são:
-*** global
-
-| Key      | Descrição                 | Função               |
-| <escape> | quit                      | keyboard-escape-quit |
-| C-=      | aumenta a fonte do buffer | text-scale-increase  |
-| C--      | diminui a fonte do buffer | text-scale-decrease  |
-
-#+begin_src emacs-lisp
-
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-#+end_src
+- "b" - buffer
+- "c" - code
+- "f" - file
+- "g" - git
+- "i" - insert
+- "n" - notes
+- "o" - open
+- "p" - project
+- "q" - quit/session
+- "r" - remote
+- "s" - search
+- "t" - toggle
 
 *** "b" - buffer
 
@@ -129,10 +131,6 @@ As classes de prefixos são:
 | C   | abre um clone do atual buffer em uma nova janela | clone-indirect-buffer-other-window |
 | k   | mata o buffer                                    | kill-current-buffer                |
 
-*** "c" - code
-*** "f" - file
-*** "g" - git
-*** "i" - insert
 *** "n" - notas
 
 PREFIXO: (SPC - n)
@@ -142,17 +140,10 @@ PREFIXO: (SPC - n)
 | f   | cria nota se não existe e abre o arquivo                       | org-roam-node-find   |
 | c   | cria nota se não existe e retorna o contexto quando completado | org-roam-capture     |
 
-*** "n" - notes
-*** "o" - open
 *** "p" - project
 
 | Key | Descrição | Função |
 |     |           |        |
-
-*** "q" - quit/session
-*** "r" - remote
-*** "s" - search
-*** "t" - toggle
 
 * IVY
 Ferramenta de /autocomplete/ para minibuffers do Emacs.

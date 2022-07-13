@@ -1,0 +1,1 @@
+("~/Projetos/emacs-config/" "~/Projetos/veos/" "~/Projetos/telekot/" "~/Projetos/sugestao-tcc/" "~/Projetos/python-utils/" "~/Projetos/latex-templates/" "~/Projetos/chave-femap-colab/")
