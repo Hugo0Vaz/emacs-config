@@ -7,7 +7,7 @@
 auto-save-list
 tramp
 .\#*
-./var/
+var/
 
 # Org-mode
 .org-id-locations

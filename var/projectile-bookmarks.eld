@@ -1,1 +1,0 @@
-("~/Projetos/emacs-config/" "~/Projetos/emacs-config/elpa/vterm-20220613.1614/" "~/Projetos/veos/" "~/Projetos/telekot/" "~/Projetos/sugestao-tcc/" "~/Projetos/python-utils/" "~/Projetos/latex-templates/" "~/Projetos/chave-femap-colab/")
