@@ -1,23 +1,9 @@
-* Emacs Config
+#+TITLE:Emacs Config
 
-Os objetivos desse arquivo de configuração são:
-- Criar um arquivo de configuração com somente o que eu necessito, sem contar com um ambiente /bloated/ como o do doom emacs.
-- Um ambiente que integra, PKM vindo do obsidian, IDE's para desenvolvimento como minha atual configuração do Neovim.
-- Keybindings mneônicos inspirados nos que são implementados no doom emacs e spacemacs.
-- Algumas soluções de produtividade como OrgTodo e OrgAgenda
-- Criar documentos em que posso usar /literate programming/ como esse aquivo de configuração.
-- Criação de notas orientadas por conceito ou método Zettlekasten, meu atual método de anotação utilizado no Obsidian.
-- Captura de notas, todos, fontes, ideias e etc. com o mínimo de atrito possível com o OrgCapture
-- Linting
-- Debugging
-- Project switching
-- Auto Completion
-
-** TODO
-- [ ] Customizar 'evil-undo-system' para funcionalidade de REDO no C-r
-- [ ] Entender mais sobre o funcionamento do Magit e configurá-lo
+Minha distribuição pessoal de emacs.
 
 * Startup performance
+
 
 #+begin_src emacs-lisp
 
@@ -33,6 +19,10 @@ Os objetivos desse arquivo de configuração são:
 (add-hook 'emacs-startup-hook #'hmvs/display-startup-time)
 
 #+end_src
+
+
+
+
 
 * Package Manager
 A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usuários isolem as configurações de pacote de forma que auxilia em perfomance e organização do aquivo.
@@ -58,7 +48,13 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 
 #+end_src
 
+
+
+
+
 * No-Littering
+
+Esse pacote auxilia a deixar o diretório ~/.emacs.d limpo de arquivos de configuração de pacotes.
 
 #+begin_src emacs-lisp
 
@@ -69,7 +65,14 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
 
 #+end_src
 
+
+
+
+
 * UI
+Nesse ponto residem todas as configurações de UI do Emacs.
+
+** General
 
 #+begin_src emacs-lisp
 
@@ -90,6 +93,101 @@ A macro [[https://jwiegley.github.io/use-package/][use-package]] permite que usu
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
+
+** Doom Modeline
+
+#+begin_src emacs-lisp
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+#+end_src
+
+** Temas
+
+#+begin_src emacs-lisp
+
+(use-package doom-themes
+  :init (load-theme 'doom-gruvbox t))
+
+#+end_src
+
+** All The Icons
+
+Um pacote utilitário que fornece algumas fontes especiais para o Emacs.
+
+#+begin_src emacs-lisp
+
+(use-package all-the-icons)
+
+#+end_src
+
+** Visual Fill column
+
+#+begin_src emacs-lisp
+
+(defun hmvs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . hmvs/org-mode-visual-fill))
+
+#+end_src
+
+** Dashboard
+
+#+begin_src emacs-lisp
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+(setq dashboard-startup-banner 'official)
+
+(setq dashboard-center-content t)
+
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+#+end_src
+
+** Which-Key
+Pacote Emacs que exibe as combinações de teclas disponíveis no minibuffer.
+
+#+begin_src emacs-lisp
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.5))
+
+#+end_src
+
+
+
+
+** Helpful
+
+#+begin_src emacs-lisp
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+#+end_src
+
+
+
 
 * TODO Keybindings
 
@@ -119,32 +217,179 @@ As classes de prefixos são:
 #+end_src
 
 *** "b" - buffer
+PREFIXO: (SPC - b)
 
-| Key | Descrição                                        | Função                             |
-| n   | abre o próximo buffer                            | next-buffer                        |
-| p   | abre o buffer anterior                           | previous-buffer                    |
-| b   | abre a escolha de buffer                         | switch-to-buffer                   |
-| i   | abre o buffer *ibuffer*                          | ibuffer                            |
-| c   | abre um clone do atual buffer                    | clone-indirect-buffer              |
-| C   | abre um clone do atual buffer em uma nova janela | clone-indirect-buffer-other-window |
-| k   | mata o buffer                                    | kill-current-buffer                |
+| Key | Descrição                                                     | Função                             |
+| b   | abre a escolha de buffer                                      | switch-to-buffer                   |
+| c   | abre um clone do atual buffer                                 | clone-indirect-buffer              |
+| C   | abre um clone do atual buffer em uma nova janela              | clone-indirect-buffer-other-window |
+| i   | abre o buffer *ibuffer*                                       | ibuffer                            |
+| k   | mata o buffer                                                 | kill-current-buffer                |
+| l   | volta para o último buffer                                    | evil-switch-to-windows-last-buffer |
+| m   | adiciona um bookmark referente ao buffer                      | bookmark-set                       |
+| M   | remove um bookmark referente ao buffer                        | bookmark-delete                    |
+| n   | abre o próximo buffer                                         | next-buffer                        |
+| N   | abre um buffer vazio                                          | evil-buffer-new                    |
+| p   | abre o buffer anterior                                        | previous-buffer                    |
+| r   |                                                               |                                    |
+| R   | substitui o conteúdo do atual buffer com o do último visitado | revert-buffer                      |
+| s   | salva o buffer                                                | basic-save-buffer                  |
+| S   | salva todos os buffers                                        | evil-write-all                     |
+| z   | bury buffer                                                   | bury-buffer                        |
+
+#+begin_src emacs-lisp
+
+(use-package general
+  :after evil)
+
+;; definindo o <leader> para a maioria dos modos
+(general-create-definer hmvs-leader-def
+  :prefix "SPC")
+
+#+end_src
 
 *** "c" - code
-*** "f" - file
-*** "g" - git
-*** "i" - insert
-*** "n" - notas
+PREFIXO: (SPC - c)
 
+| Key | Descrição | Função |
+|     |           |        |
+
+*** "f" - file
+PREFIXO: (SPC - f)
+
+| Key | Descrição                                                   | Função             |
+| d   | abre um minibuffer de dired                                 | dired              |
+| f   | abre um minibuffer de find file                             | find-file          |
+| F   | abre um minibuffer de find file no atual diretório          | *implementar*      |
+| l   | abre um minibuffer de fuzzyfinder para encontrar um arquivo | *implementar*      |
+| r   | abre um minibuffer para a escolha de arquivos recentes      | recentf-open-files |
+| r   | renomeia/move o arquivo                                     | *implementar*      |
+| s   | salva o arquivo                                             | save-buffer        |
+| S   | salva o arquivo como                                        | write-file         |
+
+*** "g" - git
+PREFIXO: (SPC - g)
+
+| Key | Descrição                                  | Função                |
+| :   | roda um comando magit no repositório atual | magit-dispatch        |
+| .   | roda um comando magit no arquivo atual     | magit-file-dispatch   |
+| b   | Magit switch branch                        | magit-branch-checkout |
+| g   | Magit status                               | magit-status          |
+| G   | Magit status here                          | magit-status-here     |
+| D   | Magit file delete                          | magit-file-delete     |
+| B   | Magit blame                                | magit-blame-addition  |
+| C   | Magit clone                                | magit-clone           |
+| F   | Magit fetch                                | magit-fetch           |
+| L   | Magit buffer log                           | magit-log-buffer-file |
+| S   | Git stage file                             | magit-stage-file      |
+| U   | Git unstage file                           | magit-unstage-file    |
+| f   | Find file                                  | magit-find-file       |
+| c   | Find commit                                | magit-show-commit     |
+
+*** "i" - insert
+PREFIXO: (SPC - i)
+
+| Key | Descrição          | Função               |
+| e   | Emoji              | emojify-insert-emoji |
+| r   | From evil register | evil-show-registers  |
+| s   | Snippet            | yas-insert-snippet   |
+| u   | Unicode            | insert-char          |
+
+*** "n" - notas
 PREFIXO: (SPC - n)
 
-| Key | Descrição                                                      | Função               |
-| i   | cria nota se não existe e adiciona link no cursor              | org-roam-node-insert |
-| f   | cria nota se não existe e abre o arquivo                       | org-roam-node-find   |
-| c   | cria nota se não existe e retorna o contexto quando completado | org-roam-capture     |
+| Key | Descrição                                                      | Função                            |
+| a   | Org genda                                                      | org-agenda                        |
+| c   | cria nota se não existe e retorna o contexto quando completado | org-roam-capture                  |
+| C   | Cancel current org-clock                                       | org-clock-cancel                  |
+| f   | cria nota se não existe e abre o arquivo                       | org-roam-node-find                |
+| F   | Find ref                                                       | org-roam-ref-find                 |
+| g   | Show graph                                                     | org-roam-graph                    |
+| i   | cria nota se não existe e adiciona link no cursor              | org-roam-node-insert              |
+| l   | Org store link                                                 | org-store-link                    |
+| m   | Tags search                                                    | org-tags-view                     |
+| n   | Org capture                                                    | org-capture                       |
+| N   | Goto capture                                                   | org-capture-goto-target           |
+| o   | Active org-clock                                               | org-clock-goto                    |
+| r   | Toggle roam buffer                                             | org-roam-buffer-toggle            |
+| R   | Launch roam buffer                                             | org-roam-buffer-display-dedicated |
+| s   | Sync database                                                  | org-roam-db-sync                  |
+| t   | Todo list                                                      | org-todo-list                     |
+| v   | View search                                                    | org-search-view                   |
 
-*** "n" - notes
+PREFIXO: (SPC - n - d)
+
+| Key | Descrição          | Função                              |
+| b   | Goto previous note | org-roam-dailies-goto-previous-note |
+| d   | Goto date          | org-roam-dailies-goto-date          |
+| D   | Capture date       | org-roam-dailies-capture-date       |
+| f   | Goto next note     | org-roam-dailies-goto-next-note     |
+| m   | Goto tomorrow      | org-roam-dailies-goto-tomorrow      |
+| M   | Capture tomorrow   | org-roam-dailies-capture-tomorrow   |
+| n   | Capture today      | org-roam-dailies-capture-today      |
+| t   | Goto today         | org-roam-dailies-goto-today         |
+| T   | Capture today      | org-roam-dailies-capture-today      |
+| y   | Goto yesterday     | org-roam-dailies-goto-yesterday     |
+| Y   | Capture yesterday  | org-roam-dailies-capture-yesterday  |
+| -   | Find directory     | org-roam-dailies-find-directory     |
+
+
 *** "o" - open
+PREFIXO: (SPC - g)
+
+      ;;; <leader> o --- open
+      (:prefix-map ("o" . "open")
+       :desc "Org agenda"       "A"  #'org-agenda
+       (:prefix ("a" . "org agenda")
+        :desc "Agenda"         "a"  #'org-agenda
+        :desc "Todo list"      "t"  #'org-todo-list
+        :desc "Tags search"    "m"  #'org-tags-view
+        :desc "View search"    "v"  #'org-search-view)
+       :desc "Default browser"    "b"  #'browse-url-of-file
+       :desc "Start debugger"     "d"  #'+debugger/start
+       :desc "New frame"          "f"  #'make-frame
+       :desc "Select frame"       "F"  #'select-frame-by-name
+       :desc "REPL"               "r"  #'+eval/open-repl-other-window
+       :desc "REPL (same window)" "R"  #'+eval/open-repl-same-window
+       :desc "Dired"              "-"  #'dired-jump
+       (:when (featurep! :ui neotree)
+        :desc "Project sidebar"              "p" #'+neotree/open
+        :desc "Find file in project sidebar" "P" #'+neotree/find-this-file)
+       (:when (featurep! :ui treemacs)
+        :desc "Project sidebar" "p" #'+treemacs/toggle
+        :desc "Find file in project sidebar" "P" #'treemacs-find-file)
+       (:when (featurep! :term shell)
+        :desc "Toggle shell popup"    "t" #'+shell/toggle
+        :desc "Open shell here"       "T" #'+shell/here)
+       (:when (featurep! :term term)
+        :desc "Toggle terminal popup" "t" #'+term/toggle
+        :desc "Open terminal here"    "T" #'+term/here)
+       (:when (featurep! :term vterm)
+        :desc "Toggle vterm popup"    "t" #'+vterm/toggle
+        :desc "Open vterm here"       "T" #'+vterm/here)
+       (:when (featurep! :term eshell)
+        :desc "Toggle eshell popup"   "e" #'+eshell/toggle
+        :desc "Open eshell here"      "E" #'+eshell/here)
+       (:when (featurep! :os macos)
+        :desc "Reveal in Finder"           "o" #'+macos/reveal-in-finder
+        :desc "Reveal project in Finder"   "O" #'+macos/reveal-project-in-finder
+        :desc "Send to Transmit"           "u" #'+macos/send-to-transmit
+        :desc "Send project to Transmit"   "U" #'+macos/send-project-to-transmit
+        :desc "Send to Launchbar"          "l" #'+macos/send-to-launchbar
+        :desc "Send project to Launchbar"  "L" #'+macos/send-project-to-launchbar
+        :desc "Open in iTerm"              "i" #'+macos/open-in-iterm
+        :desc "Open in new iTerm window"   "I" #'+macos/open-in-iterm-new-window)
+       (:when (featurep! :tools docker)
+        :desc "Docker" "D" #'docker)
+       (:when (featurep! :email mu4e)
+        :desc "mu4e" "m" #'=mu4e)
+       (:when (featurep! :email notmuch)
+        :desc "notmuch" "m" #'=notmuch)
+       (:when (featurep! :email wanderlust)
+        :desc "wanderlust" "m" #'=wanderlust))
+
 *** "p" - project
+PREFIXO: (SPC - g)
 
 | Key | Descrição | Função |
 |     |           |        |
@@ -154,7 +399,53 @@ PREFIXO: (SPC - n)
 *** "s" - search
 *** "t" - toggle
 
-* IVY
+
+* Evil Mode
+A configuração para trabalhar em modos de edição de texto com o Vi(m).
+
+#+begin_src emacs-lisp
+
+(use-package undo-tree
+  :ensure t
+  :init (global-undo-tree-mode 1))
+
+#+end_src
+
+
+#+begin_src emacs-lisp
+
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-undo-system 'undo-tree)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
+
+#+end_src
+
+
+
+
+
+* Autocomplete
+
+** IVY
 Ferramenta de /autocomplete/ para minibuffers do Emacs.
 
 #+begin_src emacs-lisp
@@ -179,7 +470,7 @@ Ferramenta de /autocomplete/ para minibuffers do Emacs.
 
 #+end_src
 
-* IVY Rich
+** IVY Rich
 Esse pacote oferece alguns comandos de IVY e Counsel melhorados através de /rich transformers/.
 
 #+begin_src emacs-lisp
@@ -190,83 +481,7 @@ Esse pacote oferece alguns comandos de IVY e Counsel melhorados através de /ric
 
 #+end_src
 
-* All The Icons
-Um pacote utilitário que fornece algumas fontes especiais para o Emacs.
-
-#+begin_src emacs-lisp
-
-(use-package all-the-icons)
-
-#+end_src
-
-* Doom Modeline
-
-#+begin_src emacs-lisp
-
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
-
-#+end_src
-
-* Temas
-
-#+begin_src emacs-lisp
-
-(use-package doom-themes
-  :init (load-theme 'doom-gruvbox t))
-
-#+end_src
-
-* Which-Key
-
-Pacote Emacs que exibe as combinações de teclas disponíveis no minibuffer.
-
-#+begin_src emacs-lisp
-
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.5))
-
-#+end_src
-
-* Helpful
-
-#+begin_src emacs-lisp
-
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-
-#+end_src
-
-* Undo-Tree
-
-#+begin_src emacs-lisp
-
-(use-package undo-tree
-  :ensure t)
-
-#+end_src
-
-* Rainbow Delimeters
-
-#+begin_src emacs-lisp
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-#+end_src
-
-* Counsel
+** Counsel
 
 #+begin_src emacs-lisp
 
@@ -279,51 +494,108 @@ Pacote Emacs que exibe as combinações de teclas disponíveis no minibuffer.
 
 #+end_src
 
-* Helpful
+
+
+
+
+* PKM Mode
+A configura do Emacs para ser usado como uma plataforma de PKM
+
+** Org Mode
 
 #+begin_src emacs-lisp
 
-(use-package helpful
+(defun hmvs/org-mode-setup ()
+  (org-indent-mode)
+  (visual-line-mode 1))
+
+(use-package org
+  :hook (org-mode . hmvs/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"))
+
+#+end_src
+
+** Org Roam
+Configura o pacote org-roam
+
+** Org Ref
+Configura o pacote org-ref
+
+
+* IDE Mode
+As configurações de IDE do Emacs. LSP Mode, DAP Mode, Linting, Git
+
+** TODO Languages
+** VTerm
+
+#+begin_src emacs-lisp
+
+(use-package vterm
+    :ensure t)
+
+#+end_src
+
+** TODO LSP Mode
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package lsp-mode
+  :init (setq lsp-keymap-prefix "C-c l")
+  :hook (prog-mode-hook . lsp-deferred)
+  :commands (lsp lsp-deferred))
+
+#+end_src
+
+** LSP IVY
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package lsp-ivy
+  :commands lsp-ivy-workspace-symbol)
+
+#+end_src
+
+** HOLD LSP ui
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package lsp-ui
+  :commands lsp-ui-mode)
+
+#+end_src
+
+** HOLD DAP Mode
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package dap-mode)
+
+;; para adicionar o adaptador DAP para uma linguage:
+;; (use-package dap-LANGUAGE)
+
+#+end_src
+
+** HOLD Magit
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package magit
   :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
 #+end_src
 
-* Evil Mode
+** Counsel Projectile
 
 #+begin_src emacs-lisp
 
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
 
 #+end_src
 
-* Projectile
+** Projectile
 
 #+begin_src emacs-lisp
 
@@ -339,119 +611,3 @@ Pacote Emacs que exibe as combinações de teclas disponíveis no minibuffer.
   (setq projectile-switch-project-action #'projectile-dired))
 
 #+end_src
-
-* Counsel Projectile
-
-#+begin_src emacs-lisp
-
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
-
-#+end_src
-
-* HOLD Magit
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package magit
-  :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-#+end_src
-
-* Dashboard
-
-#+begin_src emacs-lisp
-
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-
-(setq dashboard-startup-banner 'official)
-
-(setq dashboard-center-content t)
-
-(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-
-#+end_src
-
-* Org Mode
-
-#+begin_src emacs-lisp
-
-(defun hmvs/org-mode-setup ()
-  (org-indent-mode)
-  (visual-line-mode 1))
-
-(use-package org
-  :hook (org-mode . hmvs/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾"))
-
-#+end_src
-
-* Visual Fill column
-
-#+begin_src emacs-lisp
-
-(defun hmvs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
-        visual-fill-column-center-text t)
-  (visual-fill-column-mode 1))
-
-(use-package visual-fill-column
-  :hook (org-mode . hmvs/org-mode-visual-fill))
-
-#+end_src
-
-* VTerm
-
-#+begin_src emacs-lisp
-
-(use-package vterm
-    :ensure t)
-
-#+end_src
-
-* TODO LSP Mode
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package lsp-mode
-  :init (setq lsp-keymap-prefix "C-c l")
-  :hook (prog-mode-hook . lsp-deferred)
-  :commands (lsp lsp-deferred))
-
-#+end_src
-
-* TODO LSP IVY
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package lsp-ivy
-  :commands lsp-ivy-workspace-symbol)
-
-#+end_src
-
-* TODO LSP ui
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package lsp-ui
-  :commands lsp-ui-mode)
-
-#+end_src
-
-* HOLD DAP Mode
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package dap-mode)
-
-;; para adicionar o adaptador DAP para uma linguage:
-;; (use-package dap-LANGUAGE)
-
-#+end_src
-
-* TODO Languages

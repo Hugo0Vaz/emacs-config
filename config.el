@@ -48,7 +48,80 @@
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+(use-package doom-themes
+  :init (load-theme 'doom-gruvbox t))
+
+(use-package all-the-icons)
+
+(defun hmvs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . hmvs/org-mode-visual-fill))
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+(setq dashboard-startup-banner 'official)
+
+(setq dashboard-center-content t)
+
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.5))
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+
+
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package undo-tree
+  :ensure t
+  :init (global-undo-tree-mode 1))
+
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-undo-system 'undo-tree)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package ivy
   :diminish
@@ -72,37 +145,6 @@
   :init
   (ivy-rich-mode 1))
 
-(use-package all-the-icons)
-
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
-
-(use-package doom-themes
-  :init (load-theme 'doom-gruvbox t))
-
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.5))
-
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
-
-(use-package undo-tree
-  :ensure t)
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
          ("C-x b" . counsel-ibuffer)
@@ -110,37 +152,20 @@
          :map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history)))
 
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+(defun hmvs/org-mode-setup ()
+  (org-indent-mode)
+  (visual-line-mode 1))
 
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
+(use-package org
+  :hook (org-mode . hmvs/org-mode-setup)
   :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (setq org-ellipsis " ▾"))
 
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+(use-package vterm
+    :ensure t)
 
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
 
 (use-package projectile
   :diminish projectile-mode
@@ -152,37 +177,3 @@
   (when (file-directory-p "~/Projetos")
     (setq projectile-project-search-path '("~/Projetos")))
   (setq projectile-switch-project-action #'projectile-dired))
-
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
-
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-
-(setq dashboard-startup-banner 'official)
-
-(setq dashboard-center-content t)
-
-(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-
-(defun hmvs/org-mode-setup ()
-  (org-indent-mode)
-  (visual-line-mode 1))
-
-(use-package org
-  :hook (org-mode . hmvs/org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾"))
-
-(defun hmvs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
-        visual-fill-column-center-text t)
-  (visual-fill-column-mode 1))
-
-(use-package visual-fill-column
-  :hook (org-mode . hmvs/org-mode-visual-fill))
-
-(use-package vterm
-    :ensure t)
